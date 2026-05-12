@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   # トップページ & About
   root to: "homes#top"
-  # root = 根っこアプリの入り口に設定
-  # "homes#top" = コントローラー#アクション
+  # root = アプリの入り口に設定
+  # "homes#top" = コントローラー名#アクション名
   get "home/about" => "homes#about", as: "about"
   # get = ユーザーがブラウザで「この画面を見せて！」と**読み出し（Read）
-  # get "URL" => "コントローラー名#処理名" = URLとコントローラーの紐付け
+  # get "URL" => "コントローラー名#アクション名" = URLとコントローラーの紐付け
   # as: "about" = URLのあだ名を指定　
   # するとviewでabout_pathと書くだけでURLを呼び出せるようになる
 
@@ -34,13 +34,15 @@ Rails.application.routes.draw do
 
   # ゲストログイン (カスタム)
   post "session/guest_login" => "sessions#guest_login"
-  # post = ユーザーからデータを受け取って**「データベースに書き込んで（Create/Update）」
+  # post = ユーザーからデータを受け取って状態変更をする（Create / Update / Delete）
 
   # ユーザー機能
   resources :users, only: [:index, :show, :edit, :update]
-  # resources = [:index, :show, :edit, :update, :destroy]の中で必要なものだけを指定
+  # resources = [:index, :show, :new, :create,:edit, :update, :destroy]の中で必要なものだけを指定
   # index = ユーザーの一覧ページ
   # show = ユーザーの詳細ページ
+  # new = ユーザー新規登録ページ
+  # create = ユーザー新規登録処理
   # edit = ユーザーの編集ページ
   # update = ユーザーの情報を更新する処理
   # destroy = ユーザーの削除処理（今回は不要なので指定しない）
@@ -74,7 +76,8 @@ Rails.application.routes.draw do
     # POST /reviews/1/comments （＝1番のレビューに対してコメントを作成する！）
     # module: :reviews（プロの整理整頓術！）= 
     # 「このルーティングは、Reviewsコントローラーの中にCommentsコントローラーを作ってね！」という意味
-    # 実際のファイルは app/controllers/reviews/comments_controller.rb のように、フォルダの中に整理して置かれる
+    # 実際のファイルは app/controllers/reviews/comments_controller.rb のように、
+    # フォルダの中に整理して置かれる
 
   end
 
@@ -114,7 +117,8 @@ Rails.application.routes.draw do
 
   # PWA対応 (Rails 8 標準機能)
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # PWA =だのWebサイトを、スマホの「ネイティブアプリ（App Storeなどから入れるアプリ）」のように見せる最新技術
+  # PWA =だのWebサイトを、スマホの「ネイティブアプリ（App Storeなどから入れるアプリ）」
+  # のように見せる最新技術
   # manifest = マニフェストファイル（アプリの名前やアイコンなどを定義するファイル）
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   #service-worker = サービスワーカーファイル（オフラインでも動くようにするためのファイル）
