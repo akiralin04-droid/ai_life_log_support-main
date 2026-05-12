@@ -1,0 +1,199 @@
+<div class="container py-4">
+  <h2 class="mb-4 fw-bold"><i class="fas fa-cog me-2 text-secondary"></i> 管理者ダッシュボード</h2>
+  
+  <p class="text-muted mb-4">
+    AI Life Log Support のシステム全体の状況を確認・管理します。
+  </p>
+
+  <%# row は横並びのグループを作ります。g-4 は各パネルの隙間(gutter)の広さです %>
+  <div class="row g-4 mb-5">
+    
+    <%# ========================================== %>
+    <%# キャンペーン管理パネル %>
+    <%# col-md-3: PCサイズ(md以上)の時、画面幅の「3/12」を使う指定です。 %>
+    <%# 3 + 3 + 3 + 3 = 12 となるため、4つのパネルが横1列に綺麗に並びます。 %>
+    <%# ========================================== %>
+    <div class="col-md-3">
+      <%# border-top border-warning border-4 で上部だけに太い黄色の線を引くお洒落なデザイン %>
+      <div class="card shadow-sm border-0 h-100 border-top border-warning border-4">
+        <div class="card-body text-center p-4">
+          <h5 class="card-title fw-bold text-dark">📢 キャンペーン</h5>
+          <h2 class="display-5 my-3 fw-bold"><%= @campaign_count %><span class="fs-5 text-muted ms-1">件</span></h2>
+          <p class="text-muted small">企業のキャンペーンを登録・編集します。</p>
+          <%= link_to "管理画面へ", admin_campaigns_path, class: "btn btn-outline-warning text-dark fw-bold mt-2" %>
+        </div>
+      </div>
+    </div>
+
+    <%# ========================================== %>
+    <%# ユーザー管理パネル %>
+    <%# ========================================== %>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100 border-top border-primary border-4">
+        <div class="card-body text-center p-4">
+          <h5 class="card-title fw-bold text-dark">👤 ユーザー</h5>
+          <h2 class="display-5 my-3 fw-bold"><%= @user_count %><span class="fs-5 text-muted ms-1">人</span></h2>
+          <p class="text-muted small">登録ユーザーの確認や利用停止を行います。</p>
+          <%= link_to "管理画面へ", admin_users_path, class: "btn btn-outline-primary fw-bold mt-2" %>
+        </div>
+      </div>
+    </div>
+
+    <%# ========================================== %>
+    <%# 日記管理パネル %>
+    <%# ========================================== %>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100 border-top border-info border-4">
+        <div class="card-body text-center p-4">
+          <h5 class="card-title fw-bold text-dark">📖 日記</h5>
+          <h2 class="display-5 my-3 fw-bold"><%= @diary_count %><span class="fs-5 text-muted ms-1">件</span></h2>
+          <p class="text-muted small">公開されている日記の確認や削除を行います。</p>
+          <%= link_to "管理画面へ", admin_diaries_path, class: "btn btn-outline-info fw-bold mt-2" %>
+        </div>
+      </div>
+    </div>
+
+    <%# ========================================== %>
+    <%# レビュー管理パネル %>
+    <%# ========================================== %>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100 border-top border-success border-4">
+        <div class="card-body text-center p-4">
+          <h5 class="card-title fw-bold text-dark">✨ レビュー</h5>
+          <h2 class="display-5 my-3 fw-bold"><%= @review_count %><span class="fs-5 text-muted ms-1">件</span></h2>
+          <p class="text-muted small">公開されたレビューの確認や削除を行います。</p>
+          <%= link_to "管理画面へ", admin_reviews_path, class: "btn btn-outline-success fw-bold mt-2" %>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+
+  <%# 分析ダッシュボードセクション %>
+  <div class="row g-4">
+    <%# --- 1. 感情スコア ギャップ分析パネル --- %>
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+          <h5 class="fw-bold text-dark"><i class="fas fa-chart-line text-danger me-2"></i> 感情スコア ギャップ分析（AI vs ユーザー自己評価）</h5>
+          <p class="text-muted small mb-0">AIの分析結果とユーザーの自己評価に大きなズレがあるレビューの上位5件です。</p>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>ユーザー</th>
+                  <th>レビュー対象(日記/キャンペーン)</th>
+                  <th class="text-center">自己評価</th>
+                  <th class="text-center">AI評価</th>
+                  <th class="text-center">ギャップ(差分)</th>
+                  <th class="text-end">詳細</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @gap_reviews.any? %>
+                  <% @gap_reviews.each do |review| %>
+                    <% gap = (review.emotion_score.to_f - review.user_emotion_score.to_f).abs.round(1) %>
+                    <tr>
+                      <td><%= review.user.name %></td>
+                      <td>
+                        <% if review.diary %>
+                          日記: <%= truncate(review.diary.content, length: 20) %>
+                        <% elsif review.campaign %>
+                          CP: <%= truncate(review.campaign.title, length: 20) %>
+                        <% else %>
+                          -
+                        <% end %>
+                      </td>
+                      <td class="text-center"><span class="badge bg-primary rounded-pill"><%= review.user_emotion_score %></span></td>
+                      <td class="text-center"><span class="badge bg-info rounded-pill"><%= review.emotion_score %></span></td>
+                      <td class="text-center">
+                        <span class="text-danger fw-bold">+<%= gap %></span>
+                      </td>
+                      <td class="text-end">
+                        <%= link_to "確認", admin_review_path(review), class: "btn btn-sm btn-outline-secondary" %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% else %>
+                  <tr><td colspan="6" class="text-center text-muted py-3">該当するデータがありません</td></tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# --- 2. キャンペーン稼働状況パネル --- %>
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100 border-top border-warning border-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+          <h5 class="fw-bold text-dark"><i class="fas fa-bullhorn text-warning me-2"></i> アクティブキャンペーン状況</h5>
+          <p class="text-muted small mb-0">現在稼働中のキャンペーンの反響（AI対話数・レビュー数）です。</p>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush mt-2">
+            <% if @active_campaigns.any? %>
+              <% @active_campaigns.each do |campaign| %>
+                <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-light">
+                  <div>
+                    <div class="fw-bold text-dark"><%= campaign.title %></div>
+                    <small class="text-muted"><i class="far fa-building me-1"></i><%= campaign.company_name %></small>
+                  </div>
+                  <div class="text-end">
+                    <span class="badge bg-secondary rounded-pill me-1" title="AI対話数"><i class="fas fa-robot"></i> <%= campaign.ai_interviews.size %></span>
+                    <span class="badge bg-success rounded-pill" title="レビュー数"><i class="fas fa-pen"></i> <%= campaign.reviews.size %></span>
+                  </div>
+                </li>
+              <% end %>
+            <% else %>
+              <li class="list-group-item px-0 text-center text-muted border-0">稼働中のキャンペーンはありません</li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <%# --- 3. 最新のAI対話履歴パネル --- %>
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100 border-top border-primary border-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+          <h5 class="fw-bold text-dark"><i class="fas fa-robot text-primary me-2"></i> 最新のAI対話（推敲・深掘り）</h5>
+          <p class="text-muted small mb-0">ユーザーが直近でAIと行った対話セッションの履歴です。</p>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush mt-2">
+            <% if @recent_ai_interviews.any? %>
+              <% @recent_ai_interviews.each do |interview| %>
+                <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-light">
+                  <div>
+                    <div class="fw-bold text-dark"><i class="far fa-user text-muted me-1"></i><%= interview.user.name %></div>
+                    <small class="text-muted">
+                      <% if interview.diary %>
+                        日記: <%= truncate(interview.diary.content, length: 15) %>
+                      <% elsif interview.campaign %>
+                        CP: <%= truncate(interview.campaign.title, length: 15) %>
+                      <% else %>
+                        その他
+                      <% end %>
+                    </small>
+                  </div>
+                  <div>
+                    <small class="text-muted"><%= time_ago_in_words(interview.created_at) %>前</small>
+                  </div>
+                </li>
+              <% end %>
+            <% else %>
+              <li class="list-group-item px-0 text-center text-muted border-0">対話履歴がありません</li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
