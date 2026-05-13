@@ -1,5 +1,8 @@
+# ApplicationController = 全てのコントローラーの親クラス
+# ActionController::Base = Railsのコントローラーの機能が入っているクラス
 class ApplicationController < ActionController::Base
+  # include Authentication = 認証機能を使えるようにする設定
   include Authentication
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
+  # allow_browser versions: :modern = 古いブラウザを拒否する設定
   allow_browser versions: :modern
 end

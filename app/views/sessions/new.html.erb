@@ -12,6 +12,7 @@
           </div>
 
           <%# フラッシュメッセージ（エラー時）の表示エリア %>
+          <%# flash[:alert] = ログイン失敗時のエラーメッセージが入る場所 %>
           <% if flash[:alert] %>
             <div class="alert alert-danger text-center small">
               <%= flash[:alert] %>
@@ -19,6 +20,10 @@
           <% end %>
 
           <%# --- ログインフォーム --- %>
+          <%# form_with = Railsのフォームヘルパー %>
+          <%# session_path = SessionsControllerのcreateアクション%>
+          <%# loccal: true = JavaScriptを使わず、通常のフォーム送信を行うオプション %>
+          <%# f = フォームの各フィールドを生成するための便利なメソッドが使える %>
           <%= form_with url: session_path, local: true do |f| %>
             
             <%# メールアドレス %>
@@ -47,6 +52,7 @@
 
           <%# --- ゲストログイン（UX向上のため配置） --- %>
           <div class="d-grid gap-2 mb-3">
+          <%#button_to = 指定したURLにPOSTリクエストを送るためのフォームを生成 %>
             <%= button_to session_guest_login_path, class: "btn btn-warning fw-bold text-dark w-100" do %>
               <i class="fas fa-user-check me-1"></i> ゲストログイン (閲覧用)
             <% end %>

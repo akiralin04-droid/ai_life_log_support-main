@@ -2,6 +2,7 @@
 
 ## 読んだファイル
 - config/routes.rb
+
 - app/controllers/sessions_controller.rb
 - app/views/sessions/new.html.erb
 - app/controllers/passwords_controller.rb

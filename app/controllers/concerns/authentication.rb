@@ -3,7 +3,7 @@ module Authentication
 
   included do
     # 門番の設置
-    # 「全てのページの前に、必ず『ログインしてるか(require_authentication)』をチェックしろ！」という命令
+    # 「全てのページの前に、必ず『ログインしてるか』をチェックしろ！」という命令
     before_action :require_authentication
     # Viewへの許可証
     # コントローラーの裏方機能である「authenticated?」と「current_user」を
@@ -14,7 +14,9 @@ module Authentication
 
   class_methods do
     # 特例の許可証を発行するメソッド
-    # コントローラーで allow_unauthenticated_access を書くと、門番(require_authentication)をスキップできる
+    # コントローラーで allow_unauthenticated_access を書くと、
+    # 門番(require_authentication)をスキップできる
+    # **options = どのアクションでスキップするかを指定するための引数
     def allow_unauthenticated_access(**options)
       skip_before_action :require_authentication, **options
 
@@ -61,10 +63,18 @@ module Authentication
 
     # ログイン処理（新しい会員証の発行）
     def start_new_session_for(user)
+      # user_agent  → どのブラウザからアクセスしたか（Chrome等）
+      # ip_address  → どのIPアドレスからアクセスしたか
+      # tap do |session| = ログイン成功後の処理をまとめて書くための構文
       user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
         Current.session = session
         # ブラウザに会員証ID（クッキー）を渡す
-        cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+        # .permanent = ブラウザを閉じてもCookieが消えない
+        cookies.signed.permanent[:session_id] 
+        # value: session.id,    # セッションID
+        # httponly: true,       # JavaScriptからCookieを読めないようにする（XSS対策）
+        #same_site: :lax       # 外部サイトからのリクエストではCookieを送らない（CSRF対策）
+        = { value: session.id, httponly: true, same_site: :lax }
       end
     end
 
