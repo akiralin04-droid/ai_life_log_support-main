@@ -33,7 +33,7 @@ class UsersController < ApplicationController
     end
   end
 
-   # アカウント削除処理
+  # アカウント削除処理
   def destroy
     # @user は before_action :set_user で取得済み想定
     @user.destroy
