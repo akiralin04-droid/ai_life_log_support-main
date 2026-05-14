@@ -26,9 +26,9 @@ DBのカラム構造を定義
 ---
 
 ## 重要ポイント（これだけは覚えておく）
-@user と current_user は別物
-- @user　　　　→ URLの :id から取得したユーザー
-- current_user → セッションから取得したログイン中のユーザー
+- @user と current_user は別物
+@user　　　　→ URLの :id から取得したユーザー
+current_user → セッションから取得したログイン中のユーザー
 ensure_correct_user はこの2つを比較して本人以外を弾く
 ---
 
