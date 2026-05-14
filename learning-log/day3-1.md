@@ -1,4 +1,4 @@
-# Day3
+# Day3-1
 
 ## 読んだ機能
 - 新規登録機能
@@ -93,15 +93,15 @@ redirect_to root_path
 
 ## ファイルの繋がり
 routes.rb
-↓ URLとコントローラーを繋ぐ
+↓  URLとコントローラーを繋ぐ
 registrations_controller.rb
-↓ new → @user = User.new を渡す
+↓  new → @user = User.new を渡す
 new.html.erb（フォーム表示）
-↓ 入力データを POST で送る
+↓  入力データを POST で送る
 registrations_controller.rb
-↓ user_params → @user.save
+↓  user_params → @user.save
 user.rb（バリデーション実行）
-↓ 通過したらDBへ
+↓  通過したらDBへ
 schema.rb（usersテーブルに保存）
 ---
 
