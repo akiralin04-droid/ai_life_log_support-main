@@ -26,6 +26,7 @@
         </div>
         <div class="card-body p-4">
           
+          <%# local: true = Turboによる非同期送信を無効化。AIとのチャット画面をリダイレクトするため必要 %>
           <%= form_with model: @diary, local: true do |f| %>
             <div class="tab-content" id="diaryTabContent">
               

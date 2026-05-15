@@ -146,6 +146,8 @@ class DiariesController < ApplicationController
     # find(params[:id]) だと見つからない時にエラー(404)になりますが、
     # find_by(id: params[:id]) だとエラーにならず nil が返ります。
     @diary = current_user.diaries.find_by(id: params[:id])
+    # current_user.diaries.find_by = 自分の日記の中から探す
+    # Diary.find_by = 全ての日記の中から探す
 
     # もし見つからなかったら（＝他人の日記、または存在しないID）
     if @diary.nil?
