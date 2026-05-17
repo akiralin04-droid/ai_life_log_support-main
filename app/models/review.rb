@@ -45,7 +45,8 @@ class Review < ApplicationRecord
   validates :category, presence: true
 
   # 検索と並び替えを許可するカラム
-  def self.ransackable_attributes(auth_object = nil)["id", "is_published", "title", "body", "category", "rating", "emotion_score", "created_at"]
+  def self.ransackable_attributes(auth_object = nil)
+    ["id", "is_published", "title", "body", "category", "rating", "emotion_score", "created_at"]
   end
 
   # 関連テーブルの検索許可
